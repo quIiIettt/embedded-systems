@@ -1,18 +1,22 @@
+#include <ESP8266WiFi.h> 
+
 int btstate = 0;
+const int LED_PIN = 13; // визначаємо піни для підключення світлодіода та кніпки
+const int BUTTON_PIN = D5; 
 
 void setup() {
     Serial.begin(9600);
-    pinMode(13, OUTPUT);
-    pinMode(11, INPUT);
+    pinMode(LED_PIN, OUTPUT); // встановлюємо режим виводу
 }
 
 void loop() {
-    btstate = digitalRead(11);
-if (btstate == HIGH) {
-    digitalWrite(13, HIGH);
-    Serial.println("On");
-} else if (btstate == LOW) {
-    digitalWrite(13, LOW);
-    Serial.println("Off");
-}
+    btstate = digitalRead(BUTTON_PIN);
+
+    if (btstate == HIGH) {
+        digitalWrite(LED_PIN, HIGH); 
+        Serial.println("On");
+    } else {
+        digitalWrite(LED_PIN, LOW);
+        Serial.println("Off");
+    }
 }
