@@ -36,7 +36,7 @@ void setup() {
 void loop() {
   // отримання IP-адреси сервера через DNS
   IPAddress remoteIP;
-  WiFi.hostByName("example.com", remoteIP);
+  WiFi.hostByName("google.com", remoteIP);
   
   // відправлення UDP-пакету на сервер
   Udp.beginPacket(remoteIP, localPort);
