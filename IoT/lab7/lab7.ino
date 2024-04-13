@@ -1,17 +1,19 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-unsigned char* ssid = "Redmi";
-unsigned char* password = "123456789";
+const char* ssid = "Redmi";
+const char* password = "123456789"; 
 
-unsigned int localPort = 7777;  // local port to listen on
+const unsigned int localPort = 7777; // локальний порт для прийому даних
 
-char ReplyBuffer[] = "UDP data\r\n";        // a string to send back
+char ReplyBuffer[] = "UDP data\r\n"; 
 
-WiFiUDP Udp;
+WiFiUDP Udp; // створення об'єкту для роботи з UDP
 
 void setup() {
   Serial.begin(115200);
+  
+  // підключення до WiFi мережі
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -20,15 +22,26 @@ void setup() {
   }
   Serial.print("Connected! IP address: ");
   Serial.println(WiFi.localIP());
+  
+  // початок роботи з UDP на визначеному порту
+  if (!Udp.begin(localPort)) {
+    Serial.println("Failed to begin UDP");
+    while (1) {
+      delay(1000);
+    }
+  }
   Serial.printf("UDP server on port %d\n", localPort);
-  Udp.begin(localPort);
 }
 
 void loop() {
-    Udp.beginPacket(192.168.100.1, Udp.remotePort());
-    Udp.write(ReplyBuffer);
-    Udp.endPacket();
-    delay(10000);
-  }
+  // отримання IP-адреси сервера через DNS
+  IPAddress remoteIP;
+  WiFi.hostByName("example.com", remoteIP);
+  
+  // відправлення UDP-пакету на сервер
+  Udp.beginPacket(remoteIP, localPort);
+  Udp.write(ReplyBuffer);
+  Udp.endPacket();
+  
+  delay(10000);
 }
-
